@@ -23,36 +23,6 @@ export default function AdminSidebar() {
       path: "/admin/users",
       icon: "👥",
     },
-    {
-      name: "AI Analytics",
-      path: "/admin/analytics",
-      icon: "📈",
-    },
-    {
-      name: "Voice Learning",
-      path: "/admin/voice",
-      icon: "🎤",
-    },
-    {
-      name: "Notes",
-      path: "/admin/notes",
-      icon: "📝",
-    },
-    {
-      name: "Quiz",
-      path: "/admin/quiz",
-      icon: "🧠",
-    },
-    {
-      name: "Flashcards",
-      path: "/admin/flashcards",
-      icon: "🃏",
-    },
-    {
-      name: "Settings",
-      path: "/admin/settings",
-      icon: "⚙️",
-    },
   ];
 
   return (
@@ -71,6 +41,8 @@ export default function AdminSidebar() {
         style={{
           textAlign: "center",
           marginBottom: "40px",
+          fontSize: "24px",
+          fontWeight: "bold",
         }}
       >
         🛡 StudyMate Admin
@@ -84,7 +56,7 @@ export default function AdminSidebar() {
             style={{
               display: "block",
               padding: "15px",
-              marginBottom: "10px",
+              marginBottom: "12px",
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
@@ -93,9 +65,13 @@ export default function AdminSidebar() {
                   ? "#2563EB"
                   : "transparent",
               transition: "0.3s",
+              fontWeight: "500",
             }}
           >
-            {menu.icon} {menu.name}
+            <span style={{ marginRight: "10px" }}>
+              {menu.icon}
+            </span>
+            {menu.name}
           </Link>
         ))}
       </div>
@@ -110,6 +86,7 @@ export default function AdminSidebar() {
           borderRadius: "12px",
           cursor: "pointer",
           fontWeight: "bold",
+          fontSize: "16px",
         }}
       >
         🚪 Logout
