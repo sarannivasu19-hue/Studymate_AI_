@@ -16,7 +16,11 @@ url = URL.create(
     query={"charset": "utf8mb4"},
 )
 
-engine = create_engine(url, pool_pre_ping=True)
+engine = create_engine(
+    url,
+    pool_pre_ping=True,
+    connect_args={"ssl": {}}
+)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()
