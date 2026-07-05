@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   async function loadStats() {
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/admin/stats/"
+        `${import.meta.env.VITE_API_URL}/api/admin/stats/`
       );
 
       setStats(res.data);

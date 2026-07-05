@@ -31,7 +31,7 @@ function AIChat() {
       console.log("Sending:", userQuestion);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/ai/chat",
+        `${import.meta.env.VITE_API_URL}/api/ai/chat`,
         {
           message: userQuestion,
         },

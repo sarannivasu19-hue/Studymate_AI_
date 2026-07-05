@@ -4,7 +4,8 @@ import axios from "axios";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminNavbar from "../../components/AdminNavbar";
 
-const API = "http://127.0.0.1:8000/api";
+// Render Backend API
+const API = `${import.meta.env.VITE_API_URL}/api`;
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -19,7 +20,7 @@ export default function Users() {
       const res = await axios.get(`${API}/admin/users/`);
       setUsers(res.data);
     } catch (err) {
-      console.log(err);
+      console.error("Error loading users:", err);
     }
   }
 
@@ -34,6 +35,7 @@ export default function Users() {
       await axios.delete(`${API}/admin/users/${id}`);
       loadUsers();
     } catch (err) {
+      console.error(err);
       alert("Unable to delete user.");
     }
   }
@@ -150,11 +152,8 @@ export default function Users() {
                     }}
                   >
                     <td style={{ padding: "15px" }}>{user.id}</td>
-
                     <td>{user.full_name}</td>
-
                     <td>{user.email}</td>
-
                     <td>{user.role}</td>
 
                     <td>
