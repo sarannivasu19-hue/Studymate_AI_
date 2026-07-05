@@ -31,7 +31,7 @@ load_dotenv()
 # Create Database Tables
 # -----------------------------------
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 # -----------------------------------
 # FastAPI App
