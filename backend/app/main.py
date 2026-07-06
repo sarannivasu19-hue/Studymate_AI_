@@ -28,12 +28,6 @@ from .routers import (
 load_dotenv()
 
 # -----------------------------------
-# Create Database Tables
-# -----------------------------------
-
-#Base.metadata.create_all(bind=engine)
-
-# -----------------------------------
 # FastAPI App
 # -----------------------------------
 
@@ -46,16 +40,30 @@ app = FastAPI(
 # CORS Configuration
 # -----------------------------------
 
+frontend_origin = os.getenv(
+    "FRONTEND_ORIGIN",
+    "https://studymate-frontend-4qh0.onrender.com",
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        frontend_origin,
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://studymate-frontend-4qh0.onrender.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# -----------------------------------
+# Create Database Tables
+# -----------------------------------
+
+# Uncomment only if you want SQLAlchemy to create tables automatically.
+# Base.metadata.create_all(bind=engine)
 
 # -----------------------------------
 # Register Routers
@@ -76,14 +84,14 @@ app.include_router(admin_users.router)
 app.include_router(admin_stats.router)
 
 # -----------------------------------
-# Root API
+# Root Endpoint
 # -----------------------------------
 
 @app.get("/")
 def root():
     return {
         "status": "success",
-        "message": "Welcome to StudyMate AI Backend",
+        "message": "Welcome to StudyMate AI Backend 🚀",
     }
 
 # -----------------------------------
