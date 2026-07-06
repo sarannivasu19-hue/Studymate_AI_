@@ -1,11 +1,15 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000/api/quiz";
+const API_URL = import.meta.env.VITE_API_URL + "/api/quiz";
 
-export async function generateQuiz(topic, difficulty, numberOfQuestions = 5) {
+export async function generateQuiz(
+  topic,
+  difficulty,
+  numberOfQuestions = 5
+) {
   const response = await axios.post(`${API_URL}/generate`, {
-    topic: topic,
-    difficulty: difficulty,
+    topic,
+    difficulty,
     number_of_questions: numberOfQuestions,
   });
 
