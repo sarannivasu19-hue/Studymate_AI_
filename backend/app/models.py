@@ -1,104 +1,120 @@
-import enum
+import os
 
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Boolean,
-    Enum,
-    TIMESTAMP,
-    Text,
-    ForeignKey,
-    func,
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+# Import models BEFORE create_all()
+from . import models
+from .database import Base, engine
+
+from .routers import (
+    auth,
+    ai,
+    pdf,
+    quiz,
+    notes,
+    translation,
+    flashcards,
+    voice,
+    admin,
+    admin_dashboard,
+    admin_users,
+    admin_stats,
 )
 
-from sqlalchemy.orm import relationship
+# -----------------------------------
+# Load Environment Variables
+# -----------------------------------
 
-from .database import Base
+load_dotenv()
 
+# -----------------------------------
+# Create Database Tables Automatically
+# -----------------------------------
 
-# ==========================================================
-# USER ROLE
-# ==========================================================
+print("=" * 60)
+print("🚀 Starting StudyMate AI Backend...")
+print("=" * 60)
 
-class RoleEnum(str, enum.Enum):
-    student = "student"
-    admin = "admin"
+try:
+    print("📦 Creating database tables...")
+    Base.metadata.create_all(bind=engine)
+    print("✅ Database tables created successfully!")
+except Exception as e:
+    print("❌ Database creation failed!")
+    print(str(e))
 
+print("=" * 60)
 
-# ==========================================================
-# USER TABLE
-# ==========================================================
+# -----------------------------------
+# FastAPI App
+# -----------------------------------
 
-class User(Base):
-    __tablename__ = "users"
+app = FastAPI(
+    title="StudyMate AI API",
+    version="1.0.0",
+)
 
-    id = Column(Integer, primary_key=True, index=True)
+# -----------------------------------
+# CORS
+# -----------------------------------
 
-    full_name = Column(String(120), nullable=False)
+frontend_origin = os.getenv(
+    "FRONTEND_ORIGIN",
+    "https://studymate-frontend-4qh0.onrender.com",
+)
 
-    email = Column(String(190), unique=True, index=True, nullable=False)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        frontend_origin,
+        "https://studymate-frontend-4qh0.onrender.com",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    hashed_password = Column(String(255), nullable=False)
+# -----------------------------------
+# Routers
+# -----------------------------------
 
-    role = Column(
-        Enum(RoleEnum),
-        default=RoleEnum.student,
-        nullable=False,
-    )
+app.include_router(auth.router)
+app.include_router(ai.router)
+app.include_router(pdf.router)
+app.include_router(quiz.router)
+app.include_router(notes.router)
+app.include_router(translation.router)
+app.include_router(flashcards.router)
+app.include_router(voice.router)
 
-    is_active = Column(
-        Boolean,
-        default=True,
-        nullable=False,
-    )
+app.include_router(admin.router)
+app.include_router(admin_dashboard.router)
+app.include_router(admin_users.router)
+app.include_router(admin_stats.router)
 
-    created_at = Column(
-        TIMESTAMP,
-        server_default=func.now(),
-    )
+# -----------------------------------
+# Root
+# -----------------------------------
 
-    updated_at = Column(
-        TIMESTAMP,
-        server_default=func.now(),
-        onupdate=func.now(),
-    )
+@app.get("/")
+def root():
+    return {
+        "status": "success",
+        "message": "Welcome to StudyMate AI Backend 🚀"
+    }
 
-    # Relationship
-    pdf_documents = relationship(
-        "PDFDocument",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+# -----------------------------------
+# Health
+# -----------------------------------
 
-
-# ==========================================================
-# PDF DOCUMENTS
-# ==========================================================
-
-class PDFDocument(Base):
-    __tablename__ = "pdf_documents"
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    filename = Column(String(255), nullable=False)
-
-    filepath = Column(String(500), nullable=False)
-
-    extracted_text = Column(Text, nullable=False)
-
-    uploaded_at = Column(
-        TIMESTAMP,
-        server_default=func.now(),
-    )
-
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id"),
-        nullable=False,
-    )
-
-    user = relationship(
-        "User",
-        back_populates="pdf_documents",
-    )
+@app.get("/api/health")
+def health():
+    return {
+        "status": "ok",
+        "service": "StudyMate AI Backend",
+        "version": "1.0.0",
+    }
