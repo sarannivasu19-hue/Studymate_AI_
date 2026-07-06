@@ -1,0 +1,52 @@
+:root {
+  /* --- StudyMateAI design tokens --- */
+  --ink: #14213D;          /* primary navy, headings */
+  --ink-soft: #3A4568;     /* secondary text */
+  --paper: #FBF8F2;        /* warm paper background */
+  --paper-line: #E7E1D3;   /* ruled-paper hairlines */
+  --panel-dark: #101A30;   /* dark signature panel */
+  --spark: #F2A93C;        /* amber accent — "the spark" */
+  --pulse: #6C6FF2;        /* violet-blue accent — "the AI" */
+  --success: #2F9E6E;
+  --danger: #D14343;
+  --white: #FFFFFF;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
