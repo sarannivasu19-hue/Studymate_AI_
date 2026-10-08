@@ -1,16 +1,9 @@
-import axios from "axios";
-
-const API_URL =
-  import.meta.env.VITE_API_URL + "/api/language";
+import apiClient from "../api/client";
 
 export async function askAI(question, language) {
-  const response = await axios.post(
-    `${API_URL}/ask`,
-    {
-      question,
-      language,
-    }
-  );
-
+  const response = await apiClient.post("/api/language/ask", {
+    question,
+    language,
+  });
   return response.data;
 }

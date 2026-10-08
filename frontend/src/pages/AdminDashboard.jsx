@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../api/client";
 
 import AdminSidebar from "../components/AdminSidebar";
 import AdminNavbar from "../components/AdminNavbar";
@@ -22,10 +22,7 @@ export default function AdminDashboard() {
 
   async function loadStats() {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/stats/`
-      );
-
+      const res = await apiClient.get("/api/admin/stats/");
       setStats(res.data);
     } catch (err) {
       console.log(err);
@@ -72,34 +69,34 @@ export default function AdminDashboard() {
       path: "/admin/users",
     },
     {
-      title: "Analytics",
-      icon: "📈",
-      path: "/admin/analytics",
+      title: "Student Dashboard",
+      icon: "🎓",
+      path: "/dashboard",
     },
     {
-      title: "Quiz",
+      title: "AI Tutor",
+      icon: "🤖",
+      path: "/ai-tutor",
+    },
+    {
+      title: "Quiz Generator",
       icon: "🧠",
-      path: "/admin/quiz",
+      path: "/adaptive-quiz",
     },
     {
       title: "Voice Learning",
       icon: "🎤",
-      path: "/admin/voice",
+      path: "/voice-learning",
     },
     {
       title: "AI Notes",
       icon: "📝",
-      path: "/admin/notes",
+      path: "/ai-notes",
     },
     {
       title: "Flashcards",
       icon: "🃏",
-      path: "/admin/flashcards",
-    },
-    {
-      title: "Settings",
-      icon: "⚙️",
-      path: "/admin/settings",
+      path: "/flashcards",
     },
   ];
 
@@ -131,12 +128,10 @@ export default function AdminDashboard() {
           </p>
 
           {/* Statistics Cards */}
-
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(220px,1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
               gap: "20px",
               marginBottom: "40px",
             }}
@@ -151,8 +146,7 @@ export default function AdminDashboard() {
                   borderRadius: "15px",
                   padding: "25px",
                   cursor: "pointer",
-                  boxShadow:
-                    "0 8px 20px rgba(0,0,0,.15)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,.15)",
                 }}
               >
                 <div
@@ -165,27 +159,20 @@ export default function AdminDashboard() {
                 </div>
 
                 <h2>{card.value}</h2>
-
                 <p>{card.title}</p>
               </div>
             ))}
           </div>
 
           {/* Quick Access */}
-
-          <h2
-            style={{
-              marginBottom: "20px",
-            }}
-          >
+          <h2 style={{ marginBottom: "20px" }}>
             Quick Access
           </h2>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(220px,1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
               gap: "20px",
             }}
           >
@@ -198,8 +185,7 @@ export default function AdminDashboard() {
                   borderRadius: "15px",
                   padding: "25px",
                   cursor: "pointer",
-                  boxShadow:
-                    "0 5px 15px rgba(0,0,0,.08)",
+                  boxShadow: "0 5px 15px rgba(0,0,0,.08)",
                 }}
               >
                 <div
@@ -212,9 +198,8 @@ export default function AdminDashboard() {
                 </div>
 
                 <h3>{item.title}</h3>
-
                 <p style={{ color: "#666" }}>
-                  Click to Manage
+                  Click to View
                 </p>
               </div>
             ))}

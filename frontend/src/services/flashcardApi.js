@@ -1,12 +1,9 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL + "/api/flashcards";
+import apiClient from "../api/client";
 
 export async function generateFlashcards(topic, numberOfCards = 10) {
-  const response = await axios.post(`${API_URL}/generate`, {
+  const response = await apiClient.post("/api/flashcards/generate", {
     topic,
     number_of_cards: numberOfCards,
   });
-
   return response.data;
 }

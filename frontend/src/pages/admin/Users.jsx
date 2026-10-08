@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-
+import apiClient from "../../api/client";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminNavbar from "../../components/AdminNavbar";
-
-// Render Backend API
-const API = `${import.meta.env.VITE_API_URL}/api`;
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -17,7 +13,7 @@ export default function Users() {
 
   async function loadUsers() {
     try {
-      const res = await axios.get(`${API}/admin/users/`);
+      const res = await apiClient.get("/api/admin/users/");
       setUsers(res.data);
     } catch (err) {
       console.error("Error loading users:", err);
@@ -32,7 +28,7 @@ export default function Users() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API}/admin/users/${id}`);
+      await apiClient.delete(`/api/admin/users/${id}`);
       loadUsers();
     } catch (err) {
       console.error(err);
@@ -42,8 +38,8 @@ export default function Users() {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
+      user.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+      user.email?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

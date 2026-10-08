@@ -1,20 +1,19 @@
-import axios from "axios";
-
-const API = "http://127.0.0.1:8000/api";
+import apiClient from "../api/client";
 
 // Dashboard Statistics
 export async function getDashboardStats() {
-  const res = await axios.get(`${API}/admin/stats/`);
+  const res = await apiClient.get("/api/admin/stats/");
   return res.data;
 }
 
 // Get Users
 export async function getUsers() {
-  const res = await axios.get(`${API}/admin/users/`);
+  const res = await apiClient.get("/api/admin/users/");
   return res.data;
 }
 
 // Delete User
 export async function deleteUser(id) {
-  return axios.delete(`${API}/admin/users/${id}`);
+  const res = await apiClient.delete(`/api/admin/users/${id}`);
+  return res.data;
 }

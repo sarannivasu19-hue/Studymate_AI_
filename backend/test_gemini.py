@@ -1,193 +1,53 @@
 import os
-import time
+import sys
+
+# Ensure UTF-8 output on Windows console
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 from dotenv import load_dotenv
-from google import genai
 
-# ---------------------------------------------------------
-# LOAD ENVIRONMENT VARIABLES
-# ---------------------------------------------------------
+# Ensure backend root is on Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
-API_KEY = os.getenv("GEMINI_API_KEY")
-
-if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in .env file")
-
-client = genai.Client(api_key=API_KEY)
-
-MODEL_NAME = "gemini-2.5-flash"
-
-# ---------------------------------------------------------
-# GEMINI RESPONSE
-# ---------------------------------------------------------
-
-def generate_response(prompt: str) -> str:
-    """
-    Send prompt to Gemini AI with automatic retry.
-    """
-
-    max_retries = 3
-
-    for attempt in range(max_retries):
-
-        try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt,
-            )
-
-            if hasattr(response, "text") and response.text:
-                return response.text
-
-            return "Gemini returned an empty response."
-
-        except Exception as e:
-
-            error = str(e)
-
-            print(f"Gemini Error: {error}")
-
-            # Retry only for temporary server errors
-            if (
-                "503" in error
-                or "UNAVAILABLE" in error
-                or "429" in error
-            ):
-
-                if attempt < max_retries - 1:
-
-                    wait_time = 2 * (attempt + 1)
-
-                    print(
-                        f"Retrying in {wait_time} seconds..."
-                    )
-
-                    time.sleep(wait_time)
-
-                    continue
-
-            return f"Gemini Error: {error}"
-
-# ---------------------------------------------------------
-# PDF SUMMARY
-# ---------------------------------------------------------
-
-def summarize_text(text: str) -> str:
-
-    prompt = f"""
-You are an AI Tutor.
-
-Read the study material below.
-
-Generate:
-
-1. Short Summary
-
-2. Key Points
-
-3. Important Definitions
-
-4. Exam Tips
-
-Study Material:
-
-{text}
-"""
-
-    return generate_response(prompt)
-
-# ---------------------------------------------------------
-# AI NOTES
-# ---------------------------------------------------------
-
-def generate_notes(text: str) -> str:
-
-    prompt = f"""
-You are an expert teacher.
-
-Generate clean revision notes.
-
-Requirements:
-
-• Use headings
-
-• Use bullet points
-
-• Highlight important concepts
-
-• Include formulas if available
-
-• Easy for revision
-
-Study Material:
-
-{text}
-"""
-
-    return generate_response(prompt)
-
-# ---------------------------------------------------------
-# FLASHCARDS
-# ---------------------------------------------------------
-
-def generate_flashcards(text: str) -> str:
-
-    prompt = f"""
-You are an AI Teacher.
-
-Generate at least 10 flashcards.
-
-Each flashcard must follow this format:
-
-Flashcard 1
-
-Question:
-...
-
-Answer:
-...
-
-Flashcard 2
-
-Question:
-...
-
-Answer:
-...
-
-Study Material:
-
-{text}
-"""
-
-    return generate_response(prompt)
-
-# ---------------------------------------------------------
-# QUIZ GENERATOR
-# ---------------------------------------------------------
-
-def generate_quiz(text: str) -> str:
-
-    prompt = f"""
-Generate a quiz from the following study material.
-
-Create:
-
-• 10 MCQs
-
-• 5 True/False
-
-• 5 Fill in the Blanks
-
-• 5 Short Answer Questions
-
-Also provide the answers.
-
-Study Material:
-
-{text}
-"""
-
-    return generate_response(prompt)
+from app.services.gemini_service import (
+    generate_response,
+    summarize_text,
+    generate_notes,
+    generate_flashcards,
+    generate_quiz,
+    get_ai_status,
+)
+
+print("=" * 60)
+print("  StudyMate AI Test Suite")
+print("=" * 60)
+
+status = get_ai_status()
+print(f"Status: {status['status']}")
+print(f"Active Model / Engine: {status['active_model']}")
+print(f"Live Gemini Connected: {status['live_gemini']}")
+print(f"API Key Preview: {status['key_preview']}")
+print("-" * 60)
+
+print("\n1. Testing AI Tutor Chat...")
+chat_res = generate_response("Explain Binary Search in 2 sentences.")
+print(f"Chat Response:\n{chat_res[:200]}...")
+
+print("\n2. Testing Notes Generator...")
+notes_res = generate_notes("Python Decorators")
+print(f"Notes Response:\n{notes_res[:200]}...")
+
+print("\n3. Testing Flashcard Generator...")
+cards_res = generate_flashcards("Operating Systems", 3)
+print(f"Flashcards Response:\n{cards_res[:200]}...")
+
+print("\n4. Testing Quiz Generator...")
+quiz_res = generate_quiz("Data Structures", "Easy", 3)
+print(f"Quiz Response:\n{quiz_res[:200]}...")
+
+print("\n" + "=" * 60)
+print("  All StudyMate AI tests completed successfully! 🎉")
+print("=" * 60)

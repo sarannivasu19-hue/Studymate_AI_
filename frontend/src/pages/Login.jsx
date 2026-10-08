@@ -9,7 +9,6 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -20,14 +19,10 @@ export default function Login() {
     setError("");
 
     try {
-      console.log("Sending Login Request...");
-
       const data = await login({
         email: email.trim(),
         password,
       });
-
-      console.log("Login Success:", data);
 
       saveSession(data);
 
@@ -36,74 +31,49 @@ export default function Login() {
       } else {
         navigate("/dashboard");
       }
-
     } catch (err) {
-
       console.error("Login Error:", err);
-
-      if (err.response) {
-        console.log("Backend Response:", err.response.data);
-
-        setError(
-          err.response.data.detail ||
-          "Invalid Email or Password"
-        );
-
-      } else if (err.request) {
-
-        console.log("No response from backend");
-
-        setError(
-          "Cannot connect to Backend Server.\nPlease make sure FastAPI is running."
-        );
-
+      if (err.friendlyMessage) {
+        setError(err.friendlyMessage);
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
       } else {
-
-        setError(err.message);
-
+        setError("Invalid credentials or server unavailable. Please ensure FastAPI is running.");
       }
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
+  const fillDemoAdmin = () => {
+    setEmail("admin");
+    setPassword("1906");
+  };
+
   return (
     <div className="auth-shell">
-
       <AuthSignaturePanel
         heading="Pick up right where you left off."
-        body="Your AI tutor, notes and quizzes stay in sync."
+        body="Your AI tutor, notes and quizzes stay in sync with zero latency."
       />
 
       <div className="auth-form-panel">
-
         <div className="auth-card">
-
-          <p className="auth-card-eyebrow">
-            Welcome Back
-          </p>
-
+          <p className="auth-card-eyebrow">Welcome Back</p>
           <h2>StudyMate AI Login</h2>
-
           <p className="auth-subtitle">
-            Login as Student or Administrator
+            Sign in as Student or Administrator
           </p>
 
           {error && (
-            <div className="auth-error">
+            <div className="auth-error" style={{ whiteSpace: "pre-wrap" }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-
             <div className="field">
-
               <label>Email / Admin Username</label>
-
               <input
                 type="text"
                 placeholder="Student Email or admin"
@@ -111,13 +81,10 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-
             </div>
 
             <div className="field">
-
               <label>Password</label>
-
               <input
                 type="password"
                 placeholder="Enter password"
@@ -125,7 +92,6 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-
             </div>
 
             <button
@@ -133,25 +99,48 @@ export default function Login() {
               className="auth-submit"
               disabled={loading}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Authenticating..." : "Login"}
             </button>
-
           </form>
 
+          {/* Quick Demo Credentials Assistant */}
+          <div
+            style={{
+              marginTop: "20px",
+              padding: "12px 16px",
+              background: "#F8FAFC",
+              border: "1px dashed #CBD5E1",
+              borderRadius: "10px",
+              fontSize: "12.5px",
+              color: "#64748B",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>Quick Demo Admin: <strong>admin</strong> / <strong>1906</strong></span>
+              <button
+                type="button"
+                onClick={fillDemoAdmin}
+                style={{
+                  background: "#EFF6FF",
+                  border: "1px solid #BFDBFE",
+                  color: "#2563EB",
+                  padding: "4px 8px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                }}
+              >
+                Auto Fill
+              </button>
+            </div>
+          </div>
+
           <p className="auth-switch">
-
-            New User?{" "}
-
-            <Link to="/signup">
-              Create Account
-            </Link>
-
+            New User? <Link to="/signup">Create Account</Link>
           </p>
-
         </div>
-
       </div>
-
     </div>
   );
 }

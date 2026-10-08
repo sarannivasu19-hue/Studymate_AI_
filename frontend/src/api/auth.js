@@ -1,16 +1,12 @@
-import axios from "axios";
-
-const API = import.meta.env.VITE_API_URL + "/api";
+import apiClient from "./client";
 
 // =======================
 // Login
 // =======================
 export async function login({ email, password }) {
-
   // Admin Login
   if (email.trim().toLowerCase() === "admin") {
-
-    await axios.post(`${API}/admin/login`, {
+    await apiClient.post("/api/admin/login", {
       username: email,
       password: password,
     });
@@ -26,21 +22,16 @@ export async function login({ email, password }) {
     };
   }
 
-  // Student Login
+  // Student Login (OAuth2 form-data compliant)
   const form = new URLSearchParams();
-
-  form.append("username", email);
+  form.append("username", email.trim());
   form.append("password", password);
 
-  const response = await axios.post(
-    `${API}/auth/login`,
-    form,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
+  const response = await apiClient.post("/api/auth/login", form, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
 
   return {
     ...response.data,
@@ -52,15 +43,11 @@ export async function login({ email, password }) {
 // Signup
 // =======================
 export async function signup({ full_name, email, password }) {
-
-  const response = await axios.post(
-    `${API}/auth/signup`,
-    {
-      full_name,
-      email,
-      password,
-    }
-  );
+  const response = await apiClient.post("/api/auth/signup", {
+    full_name,
+    email: email.trim(),
+    password,
+  });
 
   return response.data;
 }
@@ -69,28 +56,21 @@ export async function signup({ full_name, email, password }) {
 // Save Session
 // =======================
 export function saveSession(data) {
-
-  localStorage.setItem(
-    "studymate_token",
-    data.access_token
-  );
-
-  localStorage.setItem(
-    "studymate_role",
-    data.role || "student"
-  );
-
-  localStorage.setItem(
-    "studymate_user",
-    JSON.stringify(data.user)
-  );
+  if (data.access_token) {
+    localStorage.setItem("studymate_token", data.access_token);
+  }
+  if (data.role) {
+    localStorage.setItem("studymate_role", data.role || "student");
+  }
+  if (data.user) {
+    localStorage.setItem("studymate_user", JSON.stringify(data.user));
+  }
 }
 
 // =======================
 // Logout
 // =======================
 export function logout() {
-
   localStorage.removeItem("studymate_token");
   localStorage.removeItem("studymate_role");
   localStorage.removeItem("studymate_user");
@@ -115,5 +95,9 @@ export function getRole() {
 // =======================
 export function getCurrentUser() {
   const user = localStorage.getItem("studymate_user");
-  return user ? JSON.parse(user) : null;
+  try {
+    return user ? JSON.parse(user) : null;
+  } catch (e) {
+    return null;
+  }
 }

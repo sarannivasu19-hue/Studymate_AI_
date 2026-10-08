@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 
 import AITutor from "./pages/AITutor";
 import PDFLearning from "./pages/PDFLearning";
+import PDFLibrary from "./pages/PDFLibrary";
 import AdaptiveQuiz from "./pages/AdaptiveQuiz";
 import AINotes from "./pages/AINotes";
 import MultiLanguage from "./pages/MultiLanguage";
@@ -27,33 +28,17 @@ function ProtectedRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-
-      {/* Redirect */}
-
+      {/* Root Redirect */}
       <Route
         path="/"
-        element={
-          <Navigate
-            to={isAuthed() ? "/dashboard" : "/login"}
-            replace
-          />
-        }
+        element={<Navigate to={isAuthed() ? "/dashboard" : "/login"} replace />}
       />
 
       {/* Authentication */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
-
-      <Route
-        path="/signup"
-        element={<Signup />}
-      />
-
-      {/* Student Dashboard */}
-
+      {/* Student Protected Routes */}
       <Route
         path="/dashboard"
         element={
@@ -62,8 +47,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* AI Tutor */}
 
       <Route
         path="/ai-tutor"
@@ -74,8 +57,6 @@ export default function App() {
         }
       />
 
-      {/* PDF Learning */}
-
       <Route
         path="/pdf-learning"
         element={
@@ -85,7 +66,14 @@ export default function App() {
         }
       />
 
-      {/* AI Notes */}
+      <Route
+        path="/pdf-library"
+        element={
+          <ProtectedRoute>
+            <PDFLibrary />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/ai-notes"
@@ -96,8 +84,6 @@ export default function App() {
         }
       />
 
-      {/* Adaptive Quiz */}
-
       <Route
         path="/adaptive-quiz"
         element={
@@ -106,8 +92,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* Flashcards */}
 
       <Route
         path="/flashcards"
@@ -118,8 +102,6 @@ export default function App() {
         }
       />
 
-      {/* Voice Learning */}
-
       <Route
         path="/voice-learning"
         element={
@@ -128,8 +110,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* Multi Language */}
 
       <Route
         path="/multi-language"
@@ -141,29 +121,12 @@ export default function App() {
       />
 
       {/* ---------------- ADMIN ---------------- */}
+      <Route path="/admin" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/users" element={<Users />} />
 
-      <Route
-        path="/admin"
-        element={<AdminLogin />}
-      />
-
-      <Route
-        path="/admin/dashboard"
-        element={<AdminDashboard />}
-      />
-
-      <Route
-        path="/admin/users"
-        element={<Users />}
-      />
-
-      {/* 404 */}
-
-      <Route
-        path="*"
-        element={<Navigate to="/" replace />}
-      />
-
+      {/* 404 Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

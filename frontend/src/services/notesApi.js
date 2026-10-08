@@ -1,11 +1,8 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL + "/api/notes";
+import apiClient from "../api/client";
 
 export async function generateNotes(topic) {
-  const response = await axios.post(`${API_URL}/generate`, {
+  const response = await apiClient.post("/api/notes/generate", {
     topic,
   });
-
   return response.data;
 }
