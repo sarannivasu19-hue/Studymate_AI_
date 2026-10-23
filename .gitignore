@@ -38,6 +38,9 @@ backend/app/uploads/
 *.log
 *.zip
 *.zip.zip
+*.db
+*.sqlite
+*.sqlite3
 
 # IDEs & System files
 .vscode/
