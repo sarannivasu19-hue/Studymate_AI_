@@ -78,6 +78,7 @@ if env_origin:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=default_origins,
+    allow_origin_regex=r"https://.*\.onrender\.com",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -117,10 +118,14 @@ def root():
 @app.get("/health")
 @app.get("/api/health")
 def health():
+    from .database import db_status_info
+
     return {
         "status": "ok",
         "service": "StudyMate AI Backend",
-        "version": "1.0.0",
+        "version": "1.1.0",
+        "database": db_status_info,
+        "gemini_configured": bool(os.getenv("GEMINI_API_KEY")),
     }
 
 

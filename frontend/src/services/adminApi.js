@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = (import.meta.env.VITE_API_URL || "") + "/api";
+const API = (import.meta.env.VITE_API_URL || "http://localhost:8000") + "/api";
 
 // Dashboard Statistics
 export async function getDashboardStats() {

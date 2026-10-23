@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = (import.meta.env.VITE_API_URL || "") + "/api/translate";
+const API = (import.meta.env.VITE_API_URL || "http://localhost:8000") + "/api/translate";
 
 export async function translateText(text, targetLanguage) {
   const response = await axios.post(`${API}/text`, {
